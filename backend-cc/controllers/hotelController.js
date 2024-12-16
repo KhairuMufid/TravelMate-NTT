@@ -2,22 +2,35 @@ const { db } = require('../config/firebase');
 const { recommendHotels } = require('../services/mlService');
 
 async function getHotels(req, res) {
-    try {
-        // Get destinationId from request parameters
-        const { destinationId } = req.params;
+  try {
+      const { namaObjek } = req.params;
 
-        // Validate input
-        if (!destinationId) {
-            return res.status(400).json({ error: "Missing destinationId parameter." });
-        }
+      // Validate input
+      if (!namaObjek) {
+          return res.status(400).json({ error: "Missing namaObjek parameter." });
+      }
 
-        // Fetch recommended hotels
-        const hotels = await recommendHotels(destinationId);
-        return res.status(200).json({ hotels });
-    } catch (error) {
-        console.error('Error in getHotels:', error);
-        res.status(error.status || 500).json({ error: error.message });
-    }
+      // Fetch destinationId from Firestore based on nama_objek
+      const destinationSnapshot = await db.collection('destinations')
+          .where('nama_objek', '==', namaObjek)
+          .limit(1)
+          .get();
+
+      if (destinationSnapshot.empty) {
+          return res.status(404).json({ error: "Destination not found." });
+      }
+
+      const destinationId = destinationSnapshot.docs[0].id;
+
+      // Fetch recommended hotels
+      const hotels = await recommendHotels(destinationId);
+
+      // Return the hotels
+      return res.status(200).json({ hotels });
+  } catch (error) {
+      console.error("Error in getHotels:", error);
+      res.status(error.status || 500).json({ error: error.message });
+  }
 }
 
 async function getHotelMapsLink (req, res, next) {

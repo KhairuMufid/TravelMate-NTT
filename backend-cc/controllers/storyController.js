@@ -16,11 +16,23 @@ exports.getStories = async (req, res, next) => {
       .orderBy("createdAt", "desc")
       .get();
 
-    // Filter data untuk menghilangkan atribut mediaPaths
-    const stories = snapshot.docs.map((doc) => {
-      const { mediaPaths, ...storyData } = doc.data(); // Menghapus atribut mediaPaths
-      return { id: doc.id, ...storyData };
-    });
+    const stories = [];
+
+    for (const doc of snapshot.docs) {
+      const { likedBy = [], mediaPaths, ...storyData } = doc.data(); // Menghapus atribut mediaPaths
+      const likedByUsernames = await Promise.all(
+        likedBy.map(async (userId) => {
+          const userDoc = await db.collection("users").doc(userId).get();
+          return userDoc.exists ? userDoc.data().username : null; // Ambil username
+        })
+      );
+
+      stories.push({
+        id: doc.id,
+        ...storyData,
+        likedBy: likedByUsernames.filter((username) => username !== null), // Filter jika username tidak ditemukan
+      });
+    }
 
     res.status(200).json(stories);
   } catch (error) {
@@ -30,13 +42,11 @@ exports.getStories = async (req, res, next) => {
 
 // POST /stories - Menambahkan story baru
 exports.addStory = [
-  upload.array("media"),
-  body("userId").notEmpty().withMessage("User ID is required"),
+  upload.array("media"), // Middleware untuk file unggahan
   body("content").notEmpty().withMessage("Content is required"),
   body("rating")
     .isFloat({ min: 0, max: 5 })
     .withMessage("Rating must be between 0 and 5"),
-
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -45,7 +55,8 @@ exports.addStory = [
       );
     }
 
-    const { userId, content, rating } = req.body;
+    const userId = req.user.id; // Ambil userId dari token
+    const { content, rating } = req.body;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -54,8 +65,8 @@ exports.addStory = [
 
     try {
       const bucket = admin.storage().bucket();
-      const mediaPaths = []; // Path file yang akan digunakan untuk delete
-      const mediaURLs = []; // URL public yang akan disimpan di Firestore
+      const mediaPaths = [];
+      const mediaURLs = [];
 
       for (const file of files) {
         const filePath = `story-media/${uuidv4()}-${Date.now()}.${
@@ -63,15 +74,13 @@ exports.addStory = [
         }`;
         const blob = bucket.file(filePath);
         const blobStream = blob.createWriteStream({
-          metadata: {
-            contentType: file.mimetype,
-          },
+          metadata: { contentType: file.mimetype },
         });
 
         await new Promise((resolve, reject) => {
           blobStream.on("error", reject);
           blobStream.on("finish", () => {
-            mediaPaths.push(filePath); // Menyimpan path untuk Cloud Storage
+            mediaPaths.push(filePath);
             const mediaURL = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
             mediaURLs.push(mediaURL);
             resolve();
@@ -82,19 +91,16 @@ exports.addStory = [
 
       const storyId = uuidv4();
 
-      await db
-        .collection("stories")
-        .doc(storyId)
-        .set({
-          id: storyId,
-          userId,
-          content,
-          rating: parseFloat(rating),
-          media: mediaURLs,
-          mediaPaths, // Menyimpan path Cloud Storage untuk penghapusan
-          likes: 0,
-          createdAt: new Date(),
-        });
+      await db.collection("stories").doc(storyId).set({
+        id: storyId,
+        userId,
+        content,
+        rating: parseFloat(rating),
+        media: mediaURLs,
+        mediaPaths,
+        likes: 0,
+        createdAt: new Date(),
+      });
 
       res
         .status(201)
@@ -108,9 +114,10 @@ exports.addStory = [
 // PUT /stories/:storyId - Mengedit story
 exports.editStory = async (req, res, next) => {
   const { storyId } = req.params;
-  const { userId, content, rating } = req.body;
+  const { content, rating } = req.body;
 
   try {
+    const userId = req.user.id; // Ambil userId dari token
     const storyRef = db.collection("stories").doc(storyId);
     const storyDoc = await storyRef.get();
 
@@ -144,10 +151,11 @@ exports.editStory = async (req, res, next) => {
 
 // DELETE /stories/:id
 exports.deleteStory = async (req, res, next) => {
-  const { id } = req.params;
+  const { storyId } = req.params;
 
   try {
-    const storyRef = db.collection("stories").doc(id);
+    const userId = req.user.id; // Ambil userId dari token
+    const storyRef = db.collection("stories").doc(storyId);
     const storyDoc = await storyRef.get();
 
     if (!storyDoc.exists) {
@@ -155,15 +163,16 @@ exports.deleteStory = async (req, res, next) => {
     }
 
     const storyData = storyDoc.data();
-    const mediaPaths = storyData.mediaPaths || [];
 
-    if (mediaPaths.length === 0) {
-      console.warn(`No media paths found for story with ID ${id}`);
+    if (storyData.userId !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You can only delete your own story" });
     }
 
+    const mediaPaths = storyData.mediaPaths || [];
     const bucket = admin.storage().bucket();
 
-    // Hapus setiap file berdasarkan mediaPaths
     await Promise.all(
       mediaPaths.map(async (filePath) => {
         try {
@@ -176,7 +185,6 @@ exports.deleteStory = async (req, res, next) => {
       })
     );
 
-    // Hapus story dari Firestore
     await storyRef.delete();
 
     res.status(200).json({ message: "Story deleted successfully" });
@@ -189,13 +197,9 @@ exports.deleteStory = async (req, res, next) => {
 // POST /stories/:storyId/like - Menambahkan atau menghapus like pada story
 exports.toggleLikeStory = async (req, res, next) => {
   const { storyId } = req.params;
-  const { userId } = req.body;
-
-  if (!userId) {
-    return next(createError(400, "User ID is required"));
-  }
 
   try {
+    const userId = req.user.id; // Ambil userId dari token
     const storyRef = db.collection("stories").doc(storyId);
     const storyDoc = await storyRef.get();
 
@@ -207,7 +211,6 @@ exports.toggleLikeStory = async (req, res, next) => {
     const likedBy = storyData.likedBy || [];
 
     if (likedBy.includes(userId)) {
-      // User sudah memberikan like, maka hapus like
       await storyRef.update({
         likes: admin.firestore.FieldValue.increment(-1),
         likedBy: admin.firestore.FieldValue.arrayRemove(userId),
@@ -215,7 +218,6 @@ exports.toggleLikeStory = async (req, res, next) => {
 
       return res.status(200).json({ message: "Like removed successfully" });
     } else {
-      // User belum memberikan like, maka tambahkan like
       await storyRef.update({
         likes: admin.firestore.FieldValue.increment(1),
         likedBy: admin.firestore.FieldValue.arrayUnion(userId),
@@ -231,7 +233,8 @@ exports.toggleLikeStory = async (req, res, next) => {
 // POST /stories/:storyId/comments - Menambahkan komentar pada story
 exports.addComment = async (req, res, next) => {
   const { storyId } = req.params;
-  const { userId, content } = req.body;
+  const { content } = req.body;
+  const userId = req.user.id; // Ambil userId dari token
 
   if (!content) {
     return next(createError(400, "Comment content is required"));
@@ -294,7 +297,8 @@ exports.getComments = async (req, res, next) => {
 // PUT /stories/:storyId/comments/:commentId - Mengedit komentar
 exports.editComment = async (req, res, next) => {
   const { storyId, commentId } = req.params;
-  const { userId, content } = req.body;
+  const { content } = req.body;
+  const userId = req.user.id; // Ambil userId dari token
 
   if (!content) {
     return next(createError(400, "Comment content is required"));
@@ -334,7 +338,7 @@ exports.editComment = async (req, res, next) => {
 // DELETE /stories/:storyId/comments/:commentId - Menghapus komentar
 exports.deleteComment = async (req, res, next) => {
   const { storyId, commentId } = req.params;
-  const { userId } = req.body;
+  const userId = req.user.id; // Ambil userId dari token
 
   try {
     const commentRef = db

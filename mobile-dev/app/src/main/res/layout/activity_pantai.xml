@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.PantaiActivity">
+
+    <TextView
+        android:id="@+id/greetingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/hi_rizki"
+        android:textColor="@color/green"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/let_s_travel"
+        android:textColor="@color/green"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/greetingTextView"
+        app:layout_constraintTop_toBottomOf="@id/greetingTextView" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/travel_mate_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Corner.Full" />
+
+    <com.google.android.material.search.SearchBar
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="clear_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        app:startIconContentDescription="search"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:hint="@string/search"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp" />
+
+    <com.google.android.material.search.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="@string/search"
+        app:layout_anchor="@id/search_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <!-- Air Terjun -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAirTerjun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/air_terjun"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Batu Karang -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPantai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Pantai"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Bukit -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnBukit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/bukit"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Danau -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnDanau"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/danau"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Desa Wisata -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnDesaWisata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/desa_wisata"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Goa -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGoa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/goa"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Gunung -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGunung"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/gunung"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPulau"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/pulau"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Sungai -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSungai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/sungai"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Taman -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTaman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/taman"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Taman Nasional -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTamanNasional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/taman_nasional"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Tugu -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTugu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/tugu"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <!-- Wisata Alam -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnWisataAlam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custom_btn_filter"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/wisata_alam"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/tvDestinasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/green"
+        android:textSize="20sp"
+        android:layout_marginStart="20dp"
+        android:textStyle="bold"
+        android:text="@string/destinasi"
+        app:layout_constraintStart_toStartOf="@id/horizontalScroll"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScroll" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRecommendations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDestinasi" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

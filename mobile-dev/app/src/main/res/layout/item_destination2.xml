@@ -1,0 +1,39 @@
+<!-- res/layout/item_destination.xml -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:radius="8dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/ivDestinationImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/travel_mate_logo"/>
+
+        <TextView
+            android:id="@+id/tvDestinationName"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Destination Name" />
+
+        <TextView
+            android:id="@+id/tvDestinationDescription"
+            android:textSize="14sp"
+            android:textColor="#888888"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Description of the destination" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

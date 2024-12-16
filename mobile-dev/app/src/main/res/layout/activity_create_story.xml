@@ -1,0 +1,41 @@
+<!-- CreateStoryActivity Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <EditText
+        android:id="@+id/etStoryContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your story here"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:gravity="top|start"/>
+
+
+    <ImageView
+        android:id="@+id/ivStoryImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/uploadimage"/>
+
+
+    <RatingBar
+        android:id="@+id/ratingBarStory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="0.5"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <Button
+        android:id="@+id/btnSaveStory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Story"/>
+</LinearLayout>

@@ -102,20 +102,6 @@ async function recommendDestinations(preferences) {
             throw new Error("No destinations found in the database.");
         }
 
-        // Map kabupaten and jenis to indices
-        // const kabupatenToIdx = {
-        //     'Kupang': 0, 'Timor Tengah Selatan': 1, 'Kota Kupang': 2, 'Belu': 3,
-        //     'Manggarai Barat': 4, 'Manggarai': 5, 'Rote Ndao': 6, 'Ngada': 7,
-        //     'Manggarai Timur': 8, 'Sumba Barat Daya': 9, 'Sumba Timur': 10,
-        //     'Ende': 11, 'Sumba Barat': 12, 'Nagekeo': 13, 'Sabu Raijua': 14
-        // };
-
-        // const jenisToIdx = {
-        //     'Air Terjun': 0, 'Danau': 1, 'Taman': 2, 'Tugu': 3, 'Pantai': 4,
-        //     'Sungai': 5, 'Pulau': 6, 'Gua': 7, 'Desa Wisata': 8, 'Taman Nasional': 9,
-        //     'Batu Karang': 10, 'Gunung': 11, 'Bukit': 12, 'Goa': 13, 'Wisata Alam': 14
-        // };
-
         const kabupatenIdx = kabupatenToIdx[kabupaten];
         const jenisIdx = jenisToIdx[jenis];
 

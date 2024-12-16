@@ -1,6 +1,6 @@
 const express = require('express');
 const { register, login, googleSignIn, logout, refreshToken } = require('../controllers/authController');
-const { updateProfilePicture,  updateUsername, resetPassword, getUserById } = require('../controllers/updateData_Controller');
+const { updateProfilePicture,  updateUsername, resetPassword, getUser } = require('../controllers/updateData_Controller');
 const { submitAssessment } = require('../controllers/assessmentController');
 const { getWishlist, addWishlist, removeWishlist } = require('../controllers/wishlistController');
 const {
@@ -61,28 +61,28 @@ router.get('/login-failed', (req, res) => {
 });
 
 // Get user by ID
-router.get('/user/:id', verifyToken, getUserById);
+router.get('/user', verifyToken, getUser);
 
 // Update foto profil
-router.put('/user/:id/profile-picture', verifyToken, updateProfilePicture);
+router.put('/user/profile-picture', verifyToken, updateProfilePicture);
 
 // Ganti username
-router.put('/user/:id/username', verifyToken, updateUsername);
+router.put('/user/username', verifyToken, updateUsername);
 
 // Reset password
-router.put('/user/:id/password', verifyToken, resetPassword);
+router.put('/user/password', verifyToken, resetPassword);
 
-// user assessment
+// User assessment
 router.post('/assessment', verifyToken, submitAssessment);
 
-// data destinasi
-router.post('/recommend-destinations', verifyToken, getAllDestinations);
+// get recommendations for a user
+router.get('/recommend-destinations', verifyToken, getAllDestinations);
 
 // detail data destinasi
-router.get('/similar-destinations/:destinationId', getSimilarDestinations);
+router.get('/similar-destinations/:namaObjek', getSimilarDestinations);
 
 // Endpoint untuk rekomendasi hotel berdasarkan destinasi
-router.get('/recommend-hotels/:destinationId', getHotels);
+router.get('/recommend-hotels/:namaObjek', getHotels);
 
 // mendapatkan destinasi berdasarkan jenis objek
 router.get('/destinations/:jenis', getDestinationsByType);
@@ -94,13 +94,13 @@ router.get("/destinations/:destinationId/maps-link", getDestinationMapsLink);
 router.get("/hotels/:hotelId/maps-link", getHotelMapsLink);
 
 // Get wishlist user tertentu
-router.get('/wishlist/:userId', getWishlist);
+router.get('/wishlist', verifyToken, getWishlist);
 
 // menambahkan wishlist
 router.post('/wishlist', verifyToken, addWishlist);
 
 // menghapus wishlist
-router.delete('/wishlist/:id', verifyToken, removeWishlist);
+router.delete('/wishlist/:wishlistId', verifyToken, removeWishlist);
 
 // Endpoint untuk menambahkan story baru
 router.post("/stories", verifyToken, addStory);
@@ -112,7 +112,7 @@ router.get("/stories", getStories);
 router.put("/stories/:storyId", verifyToken, editStory);
 
 // Endpoint untuk menghapus story
-router.delete("/stories/:id", verifyToken, deleteStory);
+router.delete("/stories/:storyId", verifyToken, deleteStory);
 
 // Like story
 router.post("/stories/:storyId/like", verifyToken, toggleLikeStory);
@@ -137,9 +137,6 @@ router.post('/upload/hotels', uploadHotels);
 router.post('/upload/hotel/:hotelId', upload.single('file'), uploadHotelPicture);
 
 router.post('/upload/destination/:destinationId', upload.single('file'), uploadDestinationPicture);
-
-
-
 
 
 module.exports = router;
