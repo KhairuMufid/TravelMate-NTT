@@ -10,42 +10,36 @@ const upload = multer({ storage });
 
 
 // GET User by ID
-exports.getUserById = [
-  param('id').notEmpty().withMessage('User ID is required'),
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(createError(400, 'Validation failed', { details: errors.array() }));
+/**
+ * GET /user
+ * Get the authenticated user's data.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.getUser = async (req, res, next) => {
+  try {
+    const userId = req.user.id; // Extract userId from the token
+
+    // Fetch user data from Firestore
+    const userRef = db.collection('users').doc(userId);
+    const doc = await userRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ message: "User not found." });
     }
 
-    const { id } = req.params;
-
-    try {
-      const userRef = db.collection('users').doc(id);
-      const doc = await userRef.get();
-
-      if (!doc.exists) {
-        throw createError(404, 'User not found');
-      }
-
-      res.status(200).json({ user: doc.data() });
-    } catch (error) {
-      next(createError(500, 'Error fetching user data', { error: error.message }));
-    }
-  },
-];
+    res.status(200).json({ user: doc.data() });
+  } catch (error) {
+    console.error("Error in getUser:", error);
+    next(createError(500, "Error fetching user data", { error: error.message }));
+  }
+};
 
 // Update Foto Profil
 exports.updateProfilePicture = [
   upload.single('photo'),
-  param('id').notEmpty().withMessage('User ID is required'),
   async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(createError(400, 'Validation failed', { details: errors.array() }));
-    }
-
-    const { id } = req.params;
+    const userId = req.user.id; // Ambil userId dari token
     const file = req.file;
 
     if (!file) {
@@ -54,7 +48,7 @@ exports.updateProfilePicture = [
 
     try {
       const bucket = admin.storage().bucket();
-      const userRef = db.collection('users').doc(id);
+      const userRef = db.collection('users').doc(userId);
       const doc = await userRef.get();
 
       if (!doc.exists) {
@@ -75,12 +69,10 @@ exports.updateProfilePicture = [
       }
 
       // Upload file baru
-      const filePath = `profile-pictures/${id}-${Date.now()}.${file.mimetype.split('/')[1]}`;
+      const filePath = `profile-pictures/${userId}-${Date.now()}.${file.mimetype.split('/')[1]}`;
       const blob = bucket.file(filePath);
       const blobStream = blob.createWriteStream({
-        metadata: {
-          contentType: file.mimetype,
-        },
+        metadata: { contentType: file.mimetype },
       });
 
       blobStream.on('error', (error) => {
@@ -106,19 +98,20 @@ exports.updateProfilePicture = [
 
 // Ganti Username
 exports.updateUsername = [
-  param('id').notEmpty().withMessage('User ID is required'),
-  body('newUsername').isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
+  body('newUsername')
+    .isLength({ min: 3 })
+    .withMessage('Username must be at least 3 characters long'),
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(createError(400, 'Validation failed', { details: errors.array() }));
     }
 
-    const { id } = req.params;
+    const userId = req.user.id; // Ambil userId dari token
     const { newUsername } = req.body;
 
     try {
-      const userRef = db.collection('users').doc(id);
+      const userRef = db.collection('users').doc(userId);
       const doc = await userRef.get();
 
       if (!doc.exists) {
@@ -135,9 +128,10 @@ exports.updateUsername = [
 
 // Reset Password
 exports.resetPassword = [
-  param('id').notEmpty().withMessage('User ID is required'),
   body('oldPassword').notEmpty().withMessage('Old password is required'),
-  body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('New password must be at least 6 characters long'),
   body('confirmPassword')
     .custom((value, { req }) => value === req.body.newPassword)
     .withMessage('Passwords do not match'),
@@ -147,11 +141,11 @@ exports.resetPassword = [
       return next(createError(400, 'Validation failed', { details: errors.array() }));
     }
 
-    const { id } = req.params;
+    const userId = req.user.id; // Ambil userId dari token
     const { oldPassword, newPassword } = req.body;
 
     try {
-      const userRef = db.collection('users').doc(id);
+      const userRef = db.collection('users').doc(userId);
       const doc = await userRef.get();
 
       if (!doc.exists) {

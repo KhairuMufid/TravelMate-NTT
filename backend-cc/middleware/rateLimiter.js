@@ -1,8 +1,8 @@
 const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 jam
-  max: 200, // Maksimal 200 permintaan per 1 jam
+  windowMs: 15 * 60 * 1000, // 15 menit
+  max: 100, // Maksimal 100 permintaan per 15 menit
   message: { message: 'Too many requests, please try again later.' },
 });
 

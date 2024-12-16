@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/travel_mate_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/travel_mate_logo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="31">
+        <activity
+            android:name=".fragment.PantaiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.Filter2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.DetailWishlistActivity"
+            android:exported="false" />
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDwT3-d3zXIN0EKNiv-Z1c62DnbqhJkmFw" />
+
+        <activity
+            android:name=".view.welcome.WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.assessment.AssessmentActivity" />
+        <activity android:name=".view.login.LoginActivity" />
+        <activity android:name=".activities.CreateStoryActivity" />
+        <activity android:name=".fragment.DestinationDetailActivity" />
+        <activity android:name=".view.register.RegisterActivity" />
+        <activity android:name=".Maps.MapsActivity" />
+        <activity android:name=".view.main.MainActivity" />
+        <activity android:name=".fragment.StoryFragment" />
+        <activity android:name=".view.setting.SettingActivity" />
+        <activity android:name=".view.infoaccount.InfoAccountActivity" />
+        <activity android:name=".view.upload.UploadActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    </application>
+
+</manifest>
+

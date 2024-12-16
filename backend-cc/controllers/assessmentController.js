@@ -3,27 +3,34 @@ const { body, validationResult } = require('express-validator');
 const createError = require('http-errors');
 const { v4: uuidv4 } = require('uuid');
 
-// POST /assessment
+/**
+ * POST /assessment
+ * Save user assessment data to Firestore.
+ * @param {Request} req
+ * @param {Response} res
+ */
 async function submitAssessment(req, res) {
-  try {
-      const { userId, kabupaten, jenis_wisata, range_harga } = req.body;
+    try {
+        const userId = req.user.id; // Ambil userId dari token
+        const { preferences } = req.body;
 
-      if (!userId || !kabupaten || !jenis_wisata || !range_harga) {
-          return res.status(400).json({ error: 'Incomplete assessment data' });
-      }
+        if (!preferences || preferences.length !== 3) {
+            return res.status(400).json({
+                error: "Invalid input: preferences (kabupaten, jenis, price) are required.",
+            });
+        }
 
-      await db.collection('user_assessments').doc(userId).set({
-          kabupaten,
-          jenis_wisata,
-          range_harga,
-          submittedAt: new Date(),
-      });
+        const [kabupaten, jenis, price] = preferences;
 
-      res.status(200).json({ message: 'Assessment submitted successfully!' });
-  } catch (error) {
-      console.error('Error in submitAssessment:', error);
-      res.status(500).json({ error: error.message });
-  }
+        // Save to Firestore
+        const assessmentData = { userId, kabupaten, jenis, price, createdAt: new Date() };
+        await db.collection("user_assessments").doc(userId).set(assessmentData);
+
+        res.status(200).json({ message: "Assessment saved successfully" });
+    } catch (error) {
+        console.error("Error in submitAssessment:", error);
+        res.status(500).json({ error: "Failed to save assessment", details: error.message });
+    }
 }
 
-module.exports = { submitAssessment };
+module.exports = { submitAssessment }

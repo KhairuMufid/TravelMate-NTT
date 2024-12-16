@@ -5,7 +5,7 @@ require('dotenv').config();
 const refreshTokens = new Map(); // Store refresh tokens globally
 
 const generateAccessToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' });
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '59m' });
 };
 
 const generateRefreshToken = (user) => {

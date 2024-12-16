@@ -1,0 +1,13 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark</item>
+        <item name="android:statusBarColor">@color/green</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigation</item>
+    </style>
+
+    <style name="CustomBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemBackground">@color/dark</item>
+        <item name="itemIconTint">@color/bottom_nav</item>
+        <item name="itemTextColor">@color/bottom_nav</item>
+    </style>
+</resources>

@@ -3,40 +3,52 @@ const { recommendDestinations, recommendSimilarDestinations } = require('../serv
 
 // GET /destinations
 /**
- * Controller to handle destination recommendations based on user preferences.
+ * GET /recommend-destinations
+ * Get destination recommendations based on saved user assessment.
  * @param {Request} req
  * @param {Response} res
  */
 async function getAllDestinations(req, res) {
     try {
-        const { preferences } = req.body;
+        const userId = req.user.id; // Extract userId from the token
 
-        // Validate input
-        if (!preferences || preferences.length !== 3) {
-            return res.status(400).json({
-                error: "Invalid input: preferences should include kabupaten, jenis, and price.",
-            });
+        // Fetch user assessment from Firestore
+        const assessmentDoc = await db.collection("user_assessments").doc(userId).get();
+        if (!assessmentDoc.exists) {
+            return res.status(404).json({ error: "User assessment not found" });
         }
 
-        const [kabupaten, jenis, price] = preferences;
+        const { kabupaten, jenis, price } = assessmentDoc.data();
 
         // Call the recommendation service
         const recommendations = await recommendDestinations({ kabupaten, jenis, price });
         return res.status(200).json({ recommendations });
     } catch (error) {
-        console.error("Error in getAllDestinations:", error);
-        res.status(error.status || 500).json({ error: error.message });
+        console.error("Error in getRecommendations:", error);
+        res.status(500).json({ error: error.message });
     }
 }
 
 async function getSimilarDestinations(req, res) {
     try {
-        const { destinationId } = req.params;
+        const { namaObjek } = req.params;
 
         // Validate input
-        if (!destinationId) {
-            return res.status(400).json({ error: "Missing destinationId parameter." });
+        if (!namaObjek) {
+            return res.status(400).json({ error: "Missing namaObjek parameter." });
         }
+
+        // Fetch destinationId from Firestore based on nama_objek
+        const destinationSnapshot = await db.collection('destinations')
+            .where('nama_objek', '==', namaObjek)
+            .limit(1)
+            .get();
+
+        if (destinationSnapshot.empty) {
+            return res.status(404).json({ error: "Destination not found." });
+        }
+
+        const destinationId = destinationSnapshot.docs[0].id;
 
         // Call the recommendation function
         const recommendations = await recommendSimilarDestinations(destinationId);
