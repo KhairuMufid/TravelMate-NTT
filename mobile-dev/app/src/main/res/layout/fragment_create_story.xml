@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <EditText
+        android:id="@+id/storyTitInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Story Title"
+        android:padding="12dp"
+        android:background="@drawable/edittext_background" />
+
+
+    <EditText
+        android:id="@+id/storyCtentInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write your story content..."
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edittext_background"
+        android:minHeight="150dp"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
+
+
+    <Button
+        android:id="@+id/uploadImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:textColor="@android:color/white" />
+
+
+    <ImageView
+        android:id="@+id/storyImagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:contentDescription="Story Image Preview" />
+
+
+    <Button
+        android:id="@+id/saveStoryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Save Story"
+        android:textColor="@android:color/white"
+        android:padding="12dp" />
+
+</LinearLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <ImageView
+        android:id="@+id/ivDestinationImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/uploadimage"
+        android:contentDescription="Destinasi Image" />
+
+
+    <ImageView
+        android:id="@+id/ivLove"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_love"
+        android:contentDescription="Love Icon" />
+
+
+    <TextView
+        android:id="@+id/tvNamaObjek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Objek"
+        android:textSize="20sp"
+        android:layout_below="@id/ivDestinationImage"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+
+    <TextView
+        android:id="@+id/tvDeskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deskripsi"
+        android:textSize="16sp"
+        android:layout_below="@id/tvNamaObjek"
+        android:layout_marginBottom="8dp" />
+
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rating"
+        android:textSize="16sp"
+        android:layout_below="@id/tvDeskripsi"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Alamat -->
+    <TextView
+        android:id="@+id/tvAlamat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alamat"
+        android:textSize="16sp"
+        android:layout_below="@id/tvRating"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Estimasi Harga -->
+    <TextView
+        android:id="@+id/tvEstimasiHarga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Estimasi Harga"
+        android:textSize="16sp"
+        android:layout_below="@id/tvAlamat" />
+
+</RelativeLayout>
+
+
